@@ -1,34 +1,38 @@
 import React, { Component,useState } from 'react';
+import { useDispatch,connect } from 'react-redux';
 import { size, map } from 'lodash';
+import { decodeData } from './handling_data';
 import { Container,Row,Col,Input,Button,ListGroup,ListGroupItem } from 'reactstrap';
+import { handleIncomingMessage,sendMessage } from './chat_actions';
 
 const ws = new WebSocket("ws://127.0.0.1:555");
 
-ws.onopen = () => {
-	ws.send("moi server");
-}
-
-function Chat(){
-
-	const [messageList, setMessage] = useState([]);
+function Chat(props){
+	const { name, messages } = props;
+	const dispatch = useDispatch();
 
 	ws.onmessage = (evt) => {
-		let r_msg = evt.data;
-		console.log(r_msg);
-		setMessage([...messageList,{message: r_msg,time: new Date().toLocaleTimeString()}])
+		dispatch(handleIncomingMessage(evt));
 	};
 
+	const sendMsg = (msg) => {
+		dispatch(sendMessage(msg,ws))
+	}
+	console.log(map(messages,"time"))
 	return (
 		<Container>
+			<p>
+				{props.name}
+			</p>
 			<ListGroup>
 				{
-					(size(messageList) > 0) ? 
-						map(messageList,(message)=><Message time={message.time}>{message.message}</Message>)
+					(size(messages) > 0) ? 
+						map(messages,(message)=><Message time={message.time}>{message.msg}</Message>)
 					:
 						null
 				}
 				<ListGroupItem>
-					<ChatInput/>
+					<ChatInput sendMsg={sendMsg}/>
 				</ListGroupItem>
 			</ListGroup>
 		</Container>
@@ -36,7 +40,6 @@ function Chat(){
 }
 
 function ChatInput(props){
-
 	const [ text, setText ] = useState('');
 
 	const handleChange = (event) => {
@@ -45,7 +48,7 @@ function ChatInput(props){
 	}
 
 	const sendMsg = () => {
-		ws.send(text)
+		props.sendMsg(text)
 		setText('');
 	}
 
@@ -74,4 +77,11 @@ const Message = (props) => (
 	</ListGroupItem>
 );
 
-export default Chat;
+const mapState = (state) => {
+	return {
+		name: state.name,
+		messages: state.messages,
+	};
+};
+
+export default connect(mapState)(Chat);
