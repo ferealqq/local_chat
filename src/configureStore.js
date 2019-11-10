@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware,combineReducers } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import { logger } from 'redux-logger';
 import chatReducer from './chat_reducers';
