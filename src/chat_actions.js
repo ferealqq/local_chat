@@ -4,6 +4,7 @@ export const SEND_MESSAGE = "SEND_MESSAGE";
 export const RECEIVE_MESSAGE = "RECEIVE_MESSAGE";
 
 export const RECEIVE_NAME = "RECEIVE_NAME";
+export const CHANGE_NAME = "CHANGE_NAME";
 
 export const sendMessage = (msg,websocket) => {
 	return (dispatch,getState) => {
@@ -19,6 +20,14 @@ export const sendMessage = (msg,websocket) => {
 export const recieveMessage = (msg,name,time) => createAction(RECEIVE_MESSAGE,{msg,name,time})
 
 export const receiveName = (name) => createAction(RECEIVE_NAME,{name: name})
+
+export const changeName = (name,websocket) => {
+	return (dispatch,getState) => {
+		let messageObject = {name: name, type: "CHANGE_NAME"};
+		websocket.send(objToBuffer(messageObject));
+		dispatch(createAction(CHANGE_NAME,{name: name}));
+	}
+}
 
 export const handleIncomingMessage = (event) => {
 	return (dispatch,getState)=> {

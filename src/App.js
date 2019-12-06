@@ -1,11 +1,11 @@
 import React from 'react';
-import Chat from './Chat';
+import ChatHandler from './ChatHandler';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
-      <Chat/>
+      <ChatHandler/>
     </div>
   );
 }

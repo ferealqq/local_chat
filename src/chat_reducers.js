@@ -1,4 +1,4 @@
-import { SEND_MESSAGE,RECEIVE_MESSAGE,RECEIVE_NAME } from './chat_actions';
+import { SEND_MESSAGE,RECEIVE_MESSAGE,RECEIVE_NAME,CHANGE_NAME } from './chat_actions';
 import { combineReducers } from 'redux'; 
 
 function messageReducer(state = [],action){
@@ -22,6 +22,8 @@ function messageReducer(state = [],action){
 function nameReducer(state = "",action){
 	switch(action.type){
 		case RECEIVE_NAME: 
+			return state = action.name;
+		case CHANGE_NAME:
 			return state = action.name;
 		default: return state;
 	}

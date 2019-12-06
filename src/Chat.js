@@ -2,12 +2,13 @@ import React, { useState,useEffect } from 'react';
 import { useDispatch,connect } from 'react-redux';
 import { size, map } from 'lodash';
 import { Container,Row,Col,Input,Button,ListGroup,ListGroupItem,Form } from 'reactstrap';
-import { handleIncomingMessage,sendMessage } from './chat_actions';
+import { handleIncomingMessage,sendMessage,changeName } from './chat_actions';
 import { MdModeEdit } from 'react-icons/md';
 
-const ws = new WebSocket("ws://127.0.0.1:555");
 
 function Chat(props){
+	const ws = props.websocket;
+	
 	const { name, messages } = props;
 	const dispatch = useDispatch();
 
@@ -18,9 +19,10 @@ function Chat(props){
 	const sendMsg = (msg) => {
 		dispatch(sendMessage(msg,ws))
 	}
+
 	return (
 		<Container>
-			<NameRow name={name}/> 
+			<NameRow name={name} changeName={(name)=>dispatch(changeName(name,ws))}/> 
 			<ListGroup>
 				{
 					(size(messages) > 0) ? 
@@ -85,7 +87,11 @@ function NameRow(props){
 	const [showNameField,toggleNameField] = useState(true);
 	const [name, setName] = useState(props.name)
 
-	const handleClick = () => toggleNameField(!showNameField);
+	const handleClick = () => {
+		if(showNameField && name !== props.name)
+			props.changeName(name);
+		toggleNameField(!showNameField)
+	}
 
 	const handleNameChange = (event) => setName(event.target.value);
 
@@ -96,29 +102,30 @@ function NameRow(props){
 	});
 
 	return (
-		<Row className="justify-content-center p-3">
-			{
-				showNameField ? 
-					<p className="p-2">
-						Acting as: {name||"Anonymous"}
-					</p>										
-				:
-					<React.Fragment>
-						<p className="p-2">
-							Acting as:
-						</p>		
-						<Input 
-							placeholder={name}
-							onChange={handleNameChange}
-							value={name}
-						/>
-					</React.Fragment>			
-			}
-			<div>
+		<Row className="justify-content-center p-3 w-100">
+			<Row className="justify-content-center w-100">
+				{
+					showNameField ? 
+						<p className="p-2 my-auto">
+							Acting as: {name||"Anonymous"}
+						</p>										
+					:
+						<React.Fragment>
+							<p className="p-2 my-auto">
+								Acting as:
+							</p>		
+							<Input 
+								className="w-auto my-auto"
+								placeholder={name}
+								onChange={handleNameChange}
+								value={name}
+							/>
+						</React.Fragment>			
+				}
 				<Button className="w-auto h-auto" color="primary" onClick={handleClick}>
 					<MdModeEdit/>
 				</Button>
-			</div>
+			</Row>
 		</Row>		
 	);
 }
