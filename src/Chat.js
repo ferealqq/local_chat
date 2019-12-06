@@ -9,7 +9,7 @@ import { MdModeEdit } from 'react-icons/md';
 function Chat(props){
 	const ws = props.websocket;
 	
-	const { name, messages } = props;
+	const { name, chatObjects } = props;
 	const dispatch = useDispatch();
 
 	ws.onmessage = (evt) => {
@@ -25,8 +25,13 @@ function Chat(props){
 			<NameRow name={name} changeName={(name)=>dispatch(changeName(name,ws))}/> 
 			<ListGroup>
 				{
-					(size(messages) > 0) ? 
-						map(messages,(message)=><Message {...message}/>)
+					(size(chatObjects) > 0) ? 
+						map(chatObjects,
+							(object)=> object.type === "msg" ? 
+									<Message {...object}/> 
+								: 
+									<Notification {...object} />
+						)
 					:
 						null
 				}
@@ -83,13 +88,24 @@ const Message = (props) => (
 	</ListGroupItem>
 );
 
+const Notification = (props) => (
+	<ListGroupItem>
+		<Row className="d-flex justify-content-center">
+			<p className="m-auto">
+				{props.text}
+			</p>
+		</Row>
+	</ListGroupItem>
+);
+
 function NameRow(props){
 	const [showNameField,toggleNameField] = useState(true);
 	const [name, setName] = useState(props.name)
 
 	const handleClick = () => {
-		if(showNameField && name !== props.name)
+		if(!showNameField && name !== props.name){
 			props.changeName(name);
+		}
 		toggleNameField(!showNameField)
 	}
 
@@ -130,11 +146,9 @@ function NameRow(props){
 	);
 }
 
-const mapState = (state) => {
-	return {
-		name: state.name,
-		messages: state.messages,
-	};
-};
+const mapState = (state) => ({
+	name: state.name,
+	chatObjects: state.chatObjects,
+});
 
 export default connect(mapState)(Chat);

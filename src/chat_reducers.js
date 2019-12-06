@@ -1,7 +1,7 @@
-import { SEND_MESSAGE,RECEIVE_MESSAGE,RECEIVE_NAME,CHANGE_NAME } from './chat_actions';
+import { SEND_MESSAGE,RECEIVE_MESSAGE,RECEIVE_NAME,CHANGE_NAME,NEW_NOTIFICATION } from './chat_actions';
 import { combineReducers } from 'redux'; 
 
-function messageReducer(state = [],action){
+function chatObjects(state = [],action){
 	switch(action.type){
 		case SEND_MESSAGE:
 			return state;
@@ -12,8 +12,15 @@ function messageReducer(state = [],action){
 						msg: action.msg,
 						name: action.name,
 						time: action.time,
+						type: "msg"
 					}
 				];
+		case NEW_NOTIFICATION:
+			return [...state,{
+				text: action.text,
+				time: action.time, 
+				type: "noti"
+			}];		
 		default:
 			return state;
 	}
@@ -30,6 +37,6 @@ function nameReducer(state = "",action){
 }
 
 export default combineReducers({
-	messages: messageReducer,
-	name: nameReducer
+	chatObjects: chatObjects,
+	name: nameReducer,
 });
