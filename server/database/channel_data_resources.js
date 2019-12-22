@@ -7,5 +7,5 @@ function insertChannel(port,channelName){
 
 module.exports = {
 	insertChannel,
-	getChannels: () => knex.select("*").from('channels'),
+	getChannels: () => knex.select("port","channel").from('channels'),
 } 

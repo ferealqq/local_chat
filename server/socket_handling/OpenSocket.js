@@ -3,7 +3,7 @@ const WebSocket = require('ws');
 
 function OpenSocket(port){
   this.wSocketServer = new WebSocket.Server({port});
-  
+  console.log(`web socket open at: ${port}`)
   this.handleConnection = this.handleConnection.bind(this);
   this.handleIncomingMessage = this.handleIncomingMessage.bind(this);
   this.sendMessageToClients = this.sendMessageToClients.bind(this);
@@ -12,8 +12,6 @@ function OpenSocket(port){
 }
 
 OpenSocket.prototype.handleIncomingMessage = function(data,ws){
-  console.log(data.toString());
-  console.log("ws name",ws.__clientName);
   let parsedData = JSON.parse(data.toString());
   switch(parsedData.type){
     case "MSG":
@@ -33,7 +31,6 @@ OpenSocket.prototype.handleConnection = function(ws){
     type: "SET_NAME", 
     name: name
   };
-  console.log(JSON.stringify(obj));
   ws.send(
     objToBuffer(obj)
   );  
@@ -55,6 +52,4 @@ function objToBuffer(obj){
   return Buffer.from(JSON.stringify(obj));
 }
 
-module.exports = {
-  OpenSocket,
-}
+module.exports = OpenSocket;
