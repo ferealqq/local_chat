@@ -10,12 +10,7 @@ function ChannelRouter(socketServer){
 	this.handleNewChannelPost = this.handleNewChannelPost.bind(this);
 	this.getRouter = this.getRouter.bind(this);
 
-	this.router.get('/',(req,res)=>{
-		getChannels().then((data)=>{
-			res.json(data);
-		})
-	});
-
+	this.router.get('/',this.getChannels);
 	this.router.post('/new',this.handleNewChannelPost);	
 }
 
@@ -27,7 +22,7 @@ ChannelRouter.prototype.handleNewChannelPost = function(req,res){
 				insertChannel(port,channel).then((response)=>{
 					if(_.size(response) === 1 ){
 						this.socketServer.openNewSocket(port,channel);
-						res.json({msg: "New channel is now open!"});
+						res.json({msg: "New channel is now open!", port: port, channel: channel});
 					}else{
 						res.status(500).json({msg: "Something went wrong while saving the new channel!"});
 					}
@@ -38,6 +33,10 @@ ChannelRouter.prototype.handleNewChannelPost = function(req,res){
 		});
 	}
 }
+
+ChannelRouter.prototype.getChannels = (req,res)	=> {
+	getChannels().then(data => res.json(data))
+};	
 
 ChannelRouter.prototype.getRouter = function(){
 	return this.router;

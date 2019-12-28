@@ -2,7 +2,7 @@ import React, { useState,useEffect } from 'react';
 import { useDispatch,connect } from 'react-redux';
 import { size, map } from 'lodash';
 import { Container,Row,Col,Input,Button,ListGroup,ListGroupItem,Form } from 'reactstrap';
-import { handleIncomingMessage,sendMessage,changeName } from './chat_actions';
+import { handleIncomingMessage,sendMessage,changeName } from './actions/chat_actions';
 import { MdModeEdit } from 'react-icons/md';
 
 

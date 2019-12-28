@@ -1,4 +1,4 @@
-import { SEND_MESSAGE,RECEIVE_MESSAGE,RECEIVE_NAME,CHANGE_NAME,NEW_NOTIFICATION } from './chat_actions';
+import { SEND_MESSAGE,RECEIVE_MESSAGE,RECEIVE_NAME,CHANGE_NAME,NEW_NOTIFICATION } from '../actions/chat_actions';
 import { combineReducers } from 'redux'; 
 
 function chatObjects(state = [],action){
@@ -36,7 +36,7 @@ function nameReducer(state = "",action){
 	}
 }
 
-export default combineReducers({
+export default {
 	chatObjects: chatObjects,
 	name: nameReducer,
-});
+};

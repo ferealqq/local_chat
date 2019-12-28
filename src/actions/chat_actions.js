@@ -1,4 +1,4 @@
-import { decodeData,objToBuffer } from './handling_data';
+import { decodeData,objToBuffer } from '../handling_data';
 
 export const SEND_MESSAGE = "SEND_MESSAGE";
 export const RECEIVE_MESSAGE = "RECEIVE_MESSAGE";

@@ -1,3 +1,5 @@
+import { toNumber,isNumber } from 'lodash';
+
 /*
 	buf = websocket event
 	returns a promise with decoded object
@@ -18,4 +20,11 @@ export function decodeData(evt){
 
 export function objToBuffer(obj){
 	return Buffer.from(JSON.stringify(obj));
+}
+
+export function newWS(port){
+	const portNumber = toNumber(port);
+	if(isNumber(portNumber)){
+		return new WebSocket(`ws://127.0.0.1:${portNumber}`);
+	}
 }

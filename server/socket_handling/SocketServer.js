@@ -3,17 +3,14 @@ const { getChannels } = require('../database/channel_data_resources');
 const _ = require('lodash');
 
 function SocketServer(){
-	let defaultSocket = new OpenSocket(123);
-	
-	this.openSockets = {
-		"default": defaultSocket, 
-	};
+	this.openSockets = {};
 
 	getChannels().then((data)=>{
 		_.each(data,(object)=>{
 			this.openSockets[object.channel] = new OpenSocket(object.port);
 		});
 	});
+	
 	this.openNewSocket = this.openNewSocket.bind(this);
 }
 

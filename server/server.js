@@ -5,7 +5,6 @@ const ChannelRouter = require('./routers/ChannelRouter');
 const socketServer = new SocketServer();
 const channelRouter = new ChannelRouter(socketServer);
 
-
 const app = express();
 
 app.use(express.json()) // for parsing application/json
