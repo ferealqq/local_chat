@@ -1,41 +1,33 @@
 import React, { Component } from 'react';
 import Chat from './Chat';
 import { connect } from 'react-redux';
-import { fetchChannels } from './actions/channel_actions';
+import { fetchChannels,connectDefault } from './actions/channel_actions';
 import { Row, Col,Button  } from 'reactstrap';
-import { map } from 'lodash';
-import { newWS } from './handling_data';
+import { map,find } from 'lodash';
 
 class ChatHandler extends Component {
-	constructor(props){
-		super(props);
-		this.handleChannelSwitch = this.handleChannelSwitch.bind(this);
-		this.state = {
-			websocket: newWS(200),
-		}
-	}
 	componentDidMount(){
 		this.props.fetchChannels();
 	}
-	handleChannelSwitch(channelObj){
-		this.setState({
-			websocket: newWS(channelObj.port)
-		})
+	componentDidUpdate(prevProps){
+		if(!this.props.channelReducer.isFetching && prevProps.channelReducer.isFetching){
+			this.props.connectDefault();
+		}
 	}
 	render() {
-		const { websocket } = this.state;
+		const { channels } = this.props.channelReducer;  
 		return (
 			<div>
 				<Row className="w-100">
 					<Col sm="2">
-						{ map(this.props.channels,(channelObj)=><Button 
+						{ map(channels,(channelObj)=><Button 
 								onClick={()=>this.handleChannelSwitch(channelObj)}> 
 									{channelObj.channel} 
 								</Button>) 
 						}
 					</Col>
 					<Col sm="8">
-						<Chat websocket={websocket} />
+						<Chat />
 					</Col>
 				</Row>
 			</div>
@@ -46,10 +38,11 @@ class ChatHandler extends Component {
 
 const mapDispatchToProps = dispatch => ({
 	fetchChannels: () => dispatch(fetchChannels()),
+	connectDefault: () => dispatch(connectDefault())
 });
 
 const mapStateToProps = state => ({
-	channels: state.channelReducer.channels,
+	channelReducer: state.channelReducer,
 });
 
 export default connect(mapStateToProps,mapDispatchToProps)(ChatHandler);

@@ -8,10 +8,10 @@ export const CHANGE_NAME = "CHANGE_NAME";
 
 export const NEW_NOTIFICATION = "NEW_NOTIFICATION";
 
-export const sendMessage = (msg,websocket) => {
+export const sendMessage = (msg) => {
 	return (dispatch,getState) => {
-		const { name } = getState();
-
+		const { name,channelReducer } = getState();
+		const websocket = channelReducer.current_channel.channel;
 		let messageObject = {msg: msg,name: name,time: new Date().toLocaleTimeString()};
 
 		websocket.send(objToBuffer({...messageObject,type: "MSG"}));
@@ -23,8 +23,11 @@ export const receiveMessage = (msg,name,time) => createAction(RECEIVE_MESSAGE,{m
 
 export const receiveName = (name) => createAction(RECEIVE_NAME,{name: name})
 
-export const changeName = (name,websocket) => {
+export const changeName = (name) => {
 	return (dispatch,getState) => {
+		const { channelReducer } = getState();
+		const websocket = channelReducer.current_channel.channel;
+
 		let messageObject = {name: name, type: "CHANGE_NAME", time: new Date().toLocaleTimeString()};
 		websocket.send(objToBuffer(messageObject));
 		dispatch(createAction(CHANGE_NAME,{name: name}));

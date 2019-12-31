@@ -7,22 +7,16 @@ import { MdModeEdit } from 'react-icons/md';
 
 
 function Chat(props){
-	const ws = props.websocket;
-	
 	const { name, chatObjects } = props;
 	const dispatch = useDispatch();
 
-	ws.onmessage = (evt) => {
-		dispatch(handleIncomingMessage(evt));
-	};
-
 	const sendMsg = (msg) => {
-		dispatch(sendMessage(msg,ws))
+		dispatch(sendMessage(msg))
 	}
 
 	return (
 		<Container>
-			<NameRow name={name} changeName={(name)=>dispatch(changeName(name,ws))}/> 
+			<NameRow name={name} changeName={(name)=>dispatch(changeName(name))}/> 
 			<ListGroup>
 				{
 					(size(chatObjects) > 0) ? 

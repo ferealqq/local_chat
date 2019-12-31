@@ -1,4 +1,4 @@
-import { REQUEST_CHANNELS, RECEIVE_CHANNELS,SWITCH_CHANNEL,CONNECT_DEFAULT } from '../actions/channel_actions';
+import { REQUEST_CHANNELS, RECEIVE_CHANNELS, CONNECT_CHANNEL } from '../actions/channel_actions';
 
 function channelReducer(state = {}, action){
 	switch(action.type){
@@ -11,16 +11,19 @@ function channelReducer(state = {}, action){
 			return {
 				...state,
 				isFetching: false,
-				channels: action.channels,
+				channelData: action.channelData,
 			}
-		case SWITCH_CHANNEL:
+		case CONNECT_CHANNEL:
 			return {
 				...state,
-
-			}
-		case CONNECT_DEFAULT:
-			return {
-				...state,
+				channels: {
+					...state.channels,
+					[action.name]: action.channel,
+				},
+				current_channel: {
+					channel: action.channel,
+					name: action.name,
+				}
 			}
 		default:
 			return state;
